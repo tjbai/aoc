@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 
 from collections import defaultdict
-from tqdm import tqdm
 from bisect import bisect_left
 
 with open('d5.in') as f:
@@ -36,7 +35,6 @@ def get_mapping(source: str, n: int) -> tuple:
     if n < ranges[source][i][0]: return (dest, n)
     return (dest, n + ranges[source][i][2])
     
-@lru_cache()
 def traverse(source: str, n: int) -> int:
     while source != 'location': source, n = get_mapping(source, n)
     return n
@@ -44,6 +42,6 @@ def traverse(source: str, n: int) -> int:
 res = float('inf')
 for i in range(0, len(seeds), 2):
     l, r = seeds[i], seeds[i+1]
-    for i in tqdm(range(r)): res = min(res, traverse('seed', l+i))
+    for i in range(r): res = min(res, traverse('seed', l+i))
    
 print(res)
