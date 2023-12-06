@@ -1,0 +1,23 @@
+#!/bin/bash
+
+N=$1
+
+if [ -d "d$N" ]; then
+    echo "already exists"
+    exit 1
+fi
+
+mkdir "d$N"
+cd "d$N"
+touch "d.in" "d${N}p1.py" "d${N}p2.py" "sample.in"
+chmod +x "d${N}p1.py" "d${N}p2.py"
+
+if [ -f "../starter" ]; then 
+    starter=$(cat "../starter")
+    echo -e "$starter" > "d${N}p1.py"
+    echo -e "$starter" > "d${N}p2.py"
+else
+    echo "no starter code found"
+fi
+
+echo "init success"
