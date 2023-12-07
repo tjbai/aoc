@@ -3,7 +3,7 @@
 from sys import argv
 from collections import defaultdict
 
-if len(argv) == 1: input_file = 'd.in'
+if len(argv) > 1: input_file = 'd.in'
 else: input_file = 'sample.in'
 
 with open(input_file) as f: s = f.read() 
@@ -44,3 +44,4 @@ ls.sort()
 res = 0
 for i, (strength, *_, hand, bid) in enumerate(ls): res += bid * (i + 1)
 print(res)
+
