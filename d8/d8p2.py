@@ -1,7 +1,7 @@
-#!/usr/bin/python3
+#!/usr/local/bin/python3
 
 from sys import argv
-import numpy as np # cheating?
+from math import lcm
 
 if len(argv) > 1: input_file = 'd.in'
 else: input_file = 'sample.in'
@@ -30,13 +30,6 @@ def period(node: str) -> int:
         offset += 1
         if offset == len(ins): offset = 0
     return steps
-    
-# too slow :/
-def lcm(nums, incs) -> int:
-    while not all(n == nums[0] for n in nums):
-        i = nums.index(min(nums))
-        nums[i] += incs[i]
-    return nums[0]
-    
+
 ps = [period(n) for n in cur]
-print(np.lcm.reduce(ps))
+print(lcm(*ps))
