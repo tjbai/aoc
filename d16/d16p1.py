@@ -9,9 +9,6 @@ else: input_file = 'sample.in'
 
 with open(input_file) as f: s = f.read() 
 
-# the beam is in a cycle if it's at the same square with same direction
-# the directions are l, r, u, d
-
 g = [[c for c in line] for line in s.split()]
 M, N = len(g), len(g[0])
 
