@@ -23,9 +23,8 @@ def dfs(springs, groups, i, j, cur_group):
         else: dfs(springs, groups, i+1, j+1, 0)
         
     else:
+        pass
         
-
-
 for line in s.split('\n'):
     springs, _groups = line.split()
     groups = list(map(int, _groups.split(',')))
