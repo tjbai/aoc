@@ -8,7 +8,7 @@ import logging
 from dataclasses import dataclass
 from abc import ABC, abstractmethod
 from collections import defaultdict, deque
-from typing import List, Literal, Dict, Deque
+from typing import List, Literal, Dict, Deque, Tuple
 
 logging.basicConfig(
     level='DEBUG' if os.environ.get('LOG') == '1' else 'INFO',
@@ -23,24 +23,6 @@ if len(sys.argv) > 1: input_file = 'd.in'
 else: input_file = 'sample.in'
 
 with open(input_file) as f: s = f.read() 
-
-'''
-notes:
-- pulses are processed in bfs
-- %
-    - high pulse, ignore
-    - low pulse
-        - if off, turn on and send high pulse
-        - if on, turn off and send low pulse
-- &, maintain dictionary of input modules (default to low)
-    - if all input are high pulse, then send low pulse
-    - else, send high pulse
-- broadcast
-    - echo pulse to all children
-- press the button 1000 times and track low and high pulses
-    - return low * high
-- watch out for cycles?
-'''
 
 Pulse = Literal['low', 'high']
 
@@ -84,14 +66,14 @@ class Flip(Module):
 class Conjunction(Module):
     def __init__(self, name, children):
         super().__init__(name, children)
-        self.parents = defaultdict(lambda: 'low')
+        self.parent_level = defaultdict(lambda: 'low')
     
     @property
-    def all_inputs_high(self, parents: List[str]) -> bool:
-        return all(self.parents[p] == 'high' for p in parent)
+    def all_inputs_high(self) -> bool:
+        return all(self.parent_level[p] == 'high' for p in parents[self.name])
     
     def receive_pulse(self, action: Action) -> List[Action]:
-        self.parents[action.sender] = action.pulse
+        self.parent_level[action.sender] = action.pulse
         return [Action(self.name, child, 'low' if self.all_inputs_high else 'high') for child in self.children]
 
 class Broadercaster(Module):
@@ -99,23 +81,42 @@ class Broadercaster(Module):
         return [Action(self.name, child, action.pulse) for child in self.children]
 
 modules: Dict[str, Module] = {}
+parents: Dict[str, List[str]] = defaultdict(list)
 
 for line in s.split('\n'):
     parent, _children = line.split(' -> ')
     children = _children.split(', ')
-    if parent[0] == '%': modules[parent[1:]] = Flip(parent[1:], children)
-    elif parent[0] == '&': modules[parent[1:]] = Conjunction(parent[1:], children)
-    else: modules[parent] = Broadercaster(parent, children)
+    
+    if parent[0] == '%':
+        parent = parent[1:]
+        modules[parent] = Flip(parent, children)
+    elif parent[0] == '&':
+        parent = parent[1:]
+        modules[parent] = Conjunction(parent, children)
+    else:  modules[parent] = Broadercaster(parent, children)
+    
+    for child in children: parents[child].append(parent)
 
-def bfs():
+def bfs() -> Tuple[int, int]:
+    low = high = 0
     q: Deque[Action] = deque()
     q.append(Action('button', 'broadcaster', 'low'))
     
     while q:
         cur = q.popleft()
         logging.debug(cur)
-        
+        if cur.pulse == 'low': low += 1
+        else: high += 1
+        if cur.receiver not in modules: continue
         recv_module = modules[cur.receiver]
         q.extend(recv_module.receive_pulse(cur))
         
-bfs()
+    return low, high
+
+low = high = 0
+for _ in range(1000):
+    dlow, dhigh = bfs()
+    low += dlow
+    high += dhigh
+    
+print(low * high)
