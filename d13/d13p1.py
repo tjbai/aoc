@@ -3,6 +3,7 @@
 import os
 import sys
 import logging
+from typing import List
 
 logging.basicConfig(
     level='DEBUG' if os.environ.get('LOG') == '1' else 'INFO',
@@ -18,27 +19,27 @@ else: input_file = 'sample.in'
 
 with open(input_file) as f: s = f.read() 
 
-def check_vertical(g, i) -> bool: 
-    M, N = len(g), len(g[0])
-    
-    # go across every row
-    for r in range(M):
-        for c in range(i, -1, -1):
-    
-    pass
-    
-def check_horizontal(g, i) -> bool:
-    M, N = len(g), len(g[0])
-    pass
+def sym(g: List[str], i: int) -> bool: 
+    for r in range(len(g)):
+        check = g[r][:i][::-1]
+        logger.debug(f'comparing {check} to {g[r][i:i+len(check)]} at r={r}')
+        for a, b in zip(check, g[r][i:i+len(check)]):
+            if a != b: return False
+    return True
 
-def solve(p: str) -> int:
-    g = [[c for c in line] for line in p.split('\n')]
-    M, N = len(g), len(g[0])
-    
-    for i in range(M-1):
-        if check_horizontal(g, i): return 100*(i+1)
+def solve(p: str) -> int:    
+    g = p.split('\n')[:-1]
+    for i in range(1, len(g[0])):
+        if sym(g, i): return i
         
-    for i in range(N-1):
-        if check_vertical(g, i): return i+1
+    g = [''.join(x) for x in zip(*g)] # transpose
+    for i in range(1, len(g)):
+        if sym(g, i): return i * 100
+        
+    return 0
+
+tot = 0
+for p in s.split('\n\n'):
+    tot += solve(p)
     
-print(sum(solve(p) for p in s.split('\n\n')))
+print(tot)
