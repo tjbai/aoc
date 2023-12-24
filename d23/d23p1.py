@@ -3,7 +3,7 @@
 import os
 import sys
 import logging
-from collections import deque
+from collections import defaultdict
 
 logging.basicConfig(
     level='DEBUG' if os.environ.get('LOG') == '1' else 'INFO',
@@ -24,19 +24,23 @@ with open(input_file) as f: s = f.read()
 g = s.split('\n')
 M, N = len(g), len(g[0])
 dirs = {'v': [(1,0)], '>': [(0,1)]}
+prune = defaultdict(lambda: -1)
 
-def dfs(r: int, c: int, seen: set) -> int:
-    if r < 0 or c < 0 or r == M or c == N: return 0
-    if (r, c) in seen: return 0
-    if (r, c) == (M-1, N-2): return 0
-    if g[r][c] == '#': return 0
+sys.setrecursionlimit(M*N)
+
+def dfs(r: int, c: int, d: int, seen: set) -> int:
+    if r < 0 or c < 0 or r == M or c == N: return
+    if (r, c) in seen: return
+    if d < prune[(r, c)]: return
+    if g[r][c] == '#': return    
     
     seen.add((r, c))
-    res = -1
+    prune[(r, c)] = d
+    
     for dr, dc in dirs.get(g[r][c], [(1,0),(-1,0),(0,1),(0,-1)]):
-        res = max(res, dfs(r+dr, c+dc, seen))
+        dfs(r+dr, c+dc, d+1, seen)
 
     seen.remove((r, c))
-    return 1 + res
 
-print(dfs(0, 1, set()))
+dfs(0, 1, 0, set())
+print(prune[(M-1, N-2)])
