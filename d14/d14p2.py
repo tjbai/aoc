@@ -1,47 +1,72 @@
 #!/usr/local/bin/python3
 
 from sys import argv
-from tqdm import tqdm
+from typing import List
 
 if len(argv) > 1: input_file = 'd.in'
 else: input_file = 'sample.in'
 
 with open(input_file) as f: s = f.read() 
 
-# rotate counter-clockwise
-def rotate(g):
-    return [[g[j][i] for j in range(len(g))] for i in range(len(g[0]))]
+# got bored with the problem, so decided to practice some better code design
 
-def cycle(g) -> int:
-        
-    def slide(c: int) -> int:
-        insert = 0
-        res = 0
-        for i in range(len(g)):
-            if g[i][c] == 'O':
-                g[i][c] = '.'
-                g[insert][c] = 'O'
-                insert += 1
-                res += len(g) - insert + 1
-            elif g[i][c] == '#':
-                insert = i + 1
-        return res
-
-    return sum(slide(i) for i in range(len(g[0])))
-
-g = [[c for c in line] for line in s.split()]
-history = []
-
-for rem in tqdm(range(int(1e10)-1, -1, -1)):
-    res = cycle(g)
+class Grid:
+    def __init__(self, g):
+        self.g = g
+        self.rot = 0
     
-    if res in history:
-        i = history.index(res)
+    @property
+    def load(self) -> int:
+        res, M = 0, len(self.g)
+        for r in range(len(self.g)):
+            for c in range(len(self.g[0])):
+                if self.g[r][c] == 'O': res += M - r
+        return res
+    
+    def slide(self) -> None:
+        for c in range(len(self.g[0])):
+            insert = 0
+            for r in range(len(self.g)):
+                if self.g[r][c] == 'O':
+                    self.g[r][c] = '.'
+                    self.g[insert][c] = 'O'
+                    insert += 1
+                elif self.g[r][c] == '#':
+                    insert = r + 1
+        
+    def _rot(self, g) -> List[List[str]]:
+        return [list(reversed(col)) for col in zip(*g)]
+        
+    def rotate(self) -> None:
+        self.rot = (self.rot + 1) % 4
+        self.g = self._rot(self.g)
+        
+    def __repr__(self) -> str:
+        g = self.g[:]
+        for _ in range((4 - self.rot) % 4): g = self._rot(g)
+        res = ''
+        for r in g:
+            res += ' '.join(r)
+            res += '\n'
+        return res
+    
+    def cycle(self) -> None:
+        for _ in range(4):
+            self.slide()
+            self.rotate()
+
+grid = Grid([list(line) for line in s.split('\n')])
+
+history = []
+for rem in range(1000000000):
+    grid.cycle()
+    
+    if grid.load in history:
+        i = history.index(grid.load)
         cycle_len = len(history) - i
         offset = rem % cycle_len
-        print(history[i + offset])
+        print(history[i+offset])
         print(history)
         break
-        
-    history.append(res)
-    g = rotate(g)
+    
+    history.append(grid.load)
