@@ -42,21 +42,14 @@ while q:
     for nr,nc in outo[(cr, cc)]:
         if (cr, cc) in into[(nr, nc)]:
             q.append((nr, nc, d+1))
-            
-for r in range(M):
-    for c in range(N):
-        if (r, c) not in pipe: g[r][c] = '.'
-
+        
 def raycast(r: int) -> int:
     res = 0
     inside = False
     for c in range(N):
-        if g[r][c] in {'|', 'L', '7', 'S'}: inside = not inside
-        if inside and g[r][c] == '.': res += 1
+        # credit to https://github.com/akolybelnikov/advent_of_code_2023/blob/main/src/bin/day10/main.rs
+        if (r, c) in pipe and g[r][c] in {'|', 'L', 'J'}: inside = not inside
+        elif (r, c) not in pipe and inside: res += 1
     return res
 
-for r in range(M):
-    print(' '.join(g[r]))
-    print(raycast(r))
-    # print()
-# print(sum(raycast(r) for r in range(M)))
+print(sum(raycast(r) for r in range(M)))
