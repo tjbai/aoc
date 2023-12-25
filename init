@@ -1,14 +1,15 @@
 #!/bin/bash
 
 N=$1
+YR=$2
 
-if [ -d "d$N" ]; then
+if [ -d "$YR/d$N" ]; then
     echo "already exists"
     exit 1
 fi
 
-mkdir "d$N"
-cd "d$N"
+mkdir "$YR/d$N"
+cd "$YR/d$N"
 touch "d.in" "d${N}p1.py" "d${N}p2.py" "sample.in"
 chmod +x "d${N}p1.py" "d${N}p2.py"
 
