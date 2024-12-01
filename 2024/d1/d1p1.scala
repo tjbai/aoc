@@ -8,4 +8,4 @@ object D1P1:
     val ls1 = input.map(_.split("\\s+")(0).toInt).sorted
     val ls2 = input.map(_.split("\\s+")(1).toInt).sorted
 
-    println(ls1.zip(ls2).map((a, b) => (a - b)).map(_.abs).sum)
+    println(ls1.zip(ls2).map((a, b) => (a - b).abs).sum)

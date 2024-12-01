@@ -1,5 +1,3 @@
-import scala.collection.mutable.Map
-
 object D1P2:
   @main def p2(args: String*): Unit =
     val ls = scala.io.Source
@@ -12,7 +10,5 @@ object D1P2:
       .map(_(1))
       .groupBy(identity)
       .mapValues(_.length)
-      .toMap
-      .withDefaultValue(0)
 
-    println(ls.map(x => (x(0) * freq(x(0)))).sum)
+    println(ls.map(x => x(0) * freq.getOrElse(x(0), 0)).sum)
