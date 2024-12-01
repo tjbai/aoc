@@ -2,7 +2,6 @@
 
 [ $# -ne 1 ] && echo "need day number" && exit 1
 [ -d "d$1" ] && echo "already exists" && exit 1
-
 mkdir -p "d$1"
 
 template="@main def main(full: Boolean = false): Unit =

@@ -1,0 +1,13 @@
+#!/bin/bash
+
+[ $# -ne 1 ] && echo "need day number" && exit 1
+[ ! -f cookies.txt ] && echo "needs an aoc cookie to fetch data files" && exit 1
+
+wget --quiet --load-cookies=cookies.txt "https://adventofcode.com/2024/day/$1/input" -O "d$1/d.in"
+
+if [ $? -eq 0 ]; then 
+    echo "grabbed data"
+else 
+    echo "failed to grab data" 
+fi
+
