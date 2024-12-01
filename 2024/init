@@ -1,0 +1,19 @@
+#!/bin/bash
+
+[ $# -ne 1 ] && echo "need day number" && exit 1
+[ -d "d$1" ] && echo "already exists" && exit 1
+
+mkdir -p "d$1"
+
+template="@main def main(full: Boolean = false): Unit =
+ val input = full match {
+   case false => scala.io.Source.fromFile(\"sample.in\").getLines
+   case true  => scala.io.Source.fromFile(\"d.in\").getLines
+ }
+
+ println(\"\")"
+
+echo "$template" > "d$1/d${1}p1.scala"
+echo "$template" > "d$1/d${1}p2.scala"
+echo "init success"
+
