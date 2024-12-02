@@ -12,7 +12,17 @@ template="@main def main(full: Boolean = false): Unit =
 
  println(\"\")"
 
-echo "$template" > "d$1/d${1}p1.scala"
-echo "$template" > "d$1/d${1}p2.scala"
+t1 = "@main def d${1}p1(args: String*): Unit =
+  val lines = scala.io.Source
+    .fromFile(if args.length > 0 then "d.in" else "sample.in")
+    .getLines"
+
+t2 = "@main def d${1}p2(args: String*): Unit =
+  val lines = scala.io.Source
+    .fromFile(if args.length > 0 then "d.in" else "sample.in")
+    .getLines"
+
+echo "$t1" > "d$1/d${1}p1.scala"
+echo "$t2" > "d$1/d${1}p2.scala"
 echo "init success"
 

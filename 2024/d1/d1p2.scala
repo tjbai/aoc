@@ -1,4 +1,4 @@
-@main def p2(args: String*): Unit =
+@main def d1p2(args: String*): Unit =
   val ls = scala.io.Source
     .fromFile(if args.length > 0 then "d.in" else "sample.in")
     .getLines

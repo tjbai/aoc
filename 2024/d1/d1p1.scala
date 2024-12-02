@@ -1,4 +1,4 @@
-@main def p1(args: String*): Unit =
+@main def d1p1(args: String*): Unit =
   var input = scala.io.Source
     .fromFile(if args.length > 0 then "d.in" else "sample.in")
     .getLines
