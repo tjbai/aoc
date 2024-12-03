@@ -5,11 +5,11 @@
   def isSafe(ls: List[Int], cond: (Int, Int) => Boolean): Boolean =
     def aux(ls: List[Int], hist: (Int, Int), life: Boolean): Boolean =
       (ls, hist) match
-        case (hd :: tl, (pp, p)) if cond(p, hd) => aux(tl, (p, hd), life)
         case (hd :: tl, (pp, p)) if !cond(p, hd) && !life => false
         case (hd :: tl, (pp, p)) if !cond(p, hd) =>
           aux(tl, (pp, p), false) || aux(ls, (pp, pp), false)
-        case _ => true
+        case (hd :: tl, (pp, p)) if cond(p, hd) => aux(tl, (p, hd), life)
+        case _                                  => true
 
     ls match
       case a :: b :: c => aux(b :: c, (a, a), true) || aux(c, (b, b), false)
