@@ -4,23 +4,19 @@
 [ -d "d$1" ] && echo "already exists" && exit 1
 mkdir -p "d$1"
 
-template="@main def main(full: Boolean = false): Unit =
- val input = full match {
-   case false => scala.io.Source.fromFile(\"sample.in\").getLines
-   case true  => scala.io.Source.fromFile(\"d.in\").getLines
- }
-
- println(\"\")"
-
-t1 = "@main def d${1}p1(args: String*): Unit =
+read -r -d '' t1 << EOM
+@main def d${1}p1(args: String*): Unit =
   val lines = scala.io.Source
     .fromFile(if args.length > 0 then "d.in" else "sample.in")
-    .getLines"
+    .getLines
+EOM
 
-t2 = "@main def d${1}p2(args: String*): Unit =
+read -r -d '' t2 << EOM
+@main def d${1}p2(args: String*): Unit =
   val lines = scala.io.Source
     .fromFile(if args.length > 0 then "d.in" else "sample.in")
-    .getLines"
+    .getLines
+EOM
 
 echo "$t1" > "d$1/d${1}p1.scala"
 echo "$t2" > "d$1/d${1}p2.scala"

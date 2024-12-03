@@ -1,5 +1,4 @@
 @main def d2p2(args: String*): Unit =
-
   val inc = (x: Int, y: Int) => 1 <= (x - y) && (x - y) <= 3
   val dec = (x: Int, y: Int) => -1 >= (x - y) && (x - y) >= -3
 

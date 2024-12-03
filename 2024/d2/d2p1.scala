@@ -1,5 +1,4 @@
 @main def d2p1(args: String*): Unit =
-
   def isSafe(ls: Array[Int]): Boolean =
     val diffs = ls.zip(ls.tail).map(_ - _)
     diffs.forall(x => 1 <= x && x <= 3) || diffs.forall(x => -1 >= x && x >= -3)
