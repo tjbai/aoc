@@ -1,3 +1,6 @@
 **/*.in
 **/*.txt
 **/__pycache__/*
+.bsp
+.metals
+.scala-build
