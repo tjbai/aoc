@@ -4,9 +4,6 @@
     .getLines
     .toSeq
 
-  // IDEA -- check all locations and keep a set of (r, c, d)
-  // if we repeat then succ
-
   val (rows, cols) = (map.length, map(0).length)
   val dirs = IArray((-1, 0), (0, 1), (1, 0), (0, -1))
 
