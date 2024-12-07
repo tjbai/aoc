@@ -16,14 +16,14 @@
 
   def isValid(update: Seq[String]): Boolean =
     var cache = Map[(String, String), Boolean]()
-    def findChild(cur: String, dest: String, subset: Set[String]): Boolean =
+    def findChild(cur: String, dest: String): Boolean =
       if cur == dest then true
       else if cache.contains((cur, dest)) then cache((cur, dest))
       else
         graph(cur)
-          .filter(subset.contains(_))
+          .filter(update.contains(_))
           .exists(child =>
-            val exists = findChild(child, dest, subset)
+            val exists = findChild(child, dest)
             cache = (cache + ((cur, dest) -> exists))
             exists
           )
@@ -31,7 +31,7 @@
     (for
       i <- 0 until update.length - 1
       j <- i + 1 until update.length
-    yield !findChild(update(j), update(i), update.toSet)).fold(true)(_ & _)
+    yield !findChild(update(j), update(i))).fold(true)(_ & _)
 
   def getMiddle(update: Array[String]): Int = update(update.length / 2).toInt
 
