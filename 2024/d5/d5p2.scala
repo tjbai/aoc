@@ -13,30 +13,24 @@ import scala.collection.mutable.Map
     .map(_.split("\\|"))
     .map(x => (x(0), x(1)))
     .groupBy(_(0))
-    .mapValues(x => x.map(_(1)))
+    .mapValues(_.map(_(1)))
     .toMap
     .withDefaultValue(Array[String]())
 
   def isValid(update: Seq[String]): Boolean =
     var cache = Map[(String, String), Boolean]()
+    var subgraph = graph.mapValues(_.filter(update.contains))
     def findChild(cur: String, dest: String): Boolean =
       cache.getOrElseUpdate(
         (cur, dest),
         if cur == dest then true
-        else
-          graph(cur)
-            .filter(update.contains(_))
-            .exists(child =>
-              val exists = findChild(child, dest)
-              cache = (cache + ((cur, dest) -> exists))
-              exists
-            )
+        else subgraph.getOrElse(cur, Array[String]()).exists(findChild(_, dest))
       )
 
     (for
       i <- 0 until update.length - 1
       j <- i + 1 until update.length
-    yield !findChild(update(j), update(i))).fold(true)(_ & _)
+    yield !findChild(update(j), update(i))).reduce(_ & _)
 
   def getMiddle(update: Seq[String]): Int = update(update.length / 2).toInt
 
@@ -64,7 +58,7 @@ import scala.collection.mutable.Map
     updates
       .split("\n")
       .map(_.split(","))
-      .filter(!isValid(_))
+      .withFilter(!isValid(_))
       .map(reorder)
       .map(getMiddle)
       .sum
