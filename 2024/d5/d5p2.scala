@@ -20,16 +20,18 @@ import scala.collection.mutable.Map
   def isValid(update: Seq[String]): Boolean =
     var cache = Map[(String, String), Boolean]()
     def findChild(cur: String, dest: String): Boolean =
-      if cur == dest then true
-      else if cache.contains((cur, dest)) then cache((cur, dest))
-      else
-        graph(cur)
-          .filter(update.contains(_))
-          .exists(child =>
-            val exists = findChild(child, dest)
-            cache = (cache + ((cur, dest) -> exists))
-            exists
-          )
+      cache.getOrElseUpdate(
+        (cur, dest),
+        if cur == dest then true
+        else
+          graph(cur)
+            .filter(update.contains(_))
+            .exists(child =>
+              val exists = findChild(child, dest)
+              cache = (cache + ((cur, dest) -> exists))
+              exists
+            )
+      )
 
     (for
       i <- 0 until update.length - 1
