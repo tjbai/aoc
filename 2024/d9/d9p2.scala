@@ -8,7 +8,9 @@ import scala.util.boundary, boundary.break
     .next
     .map(x => (x - '0').toInt)
 
-  case class Block(sz: Int, offset: Int, id: Int = -1)
+  case class Block(sz: Int, offset: Int, id: Int = -1):
+    def checksum: Double = (2 * this.offset + this.sz - 1) * (this.sz / 2.0) * this.id
+
   val usedBlocks = ArrayBuffer[Block]()
   val emptyBlocks = ArrayBuffer[Block]()
   var offset = 0
@@ -28,12 +30,4 @@ import scala.util.boundary, boundary.break
           break()
     }
 
-  println(
-    usedBlocks
-      .map(b => (2 * b.offset + b.sz - 1) * ((b.sz) / 2.toDouble) * b.id)
-      .sum
-  )
-
-  // r
-
-  // println(data.view.map(_._1).sum)
+  println(usedBlocks.map(_.checksum).sum.toInt)
