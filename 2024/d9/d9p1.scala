@@ -5,7 +5,7 @@ import scala.collection.mutable.ArrayBuffer
     .fromFile(if args.length > 0 then "d.in" else "sample.in")
     .getLines
     .next
-    .map(x => (x - '0'))
+    .map(x => x - '0')
 
   val res = ArrayBuffer[Long]()
   fs.zipWithIndex.foreach((x, i) =>

@@ -10,12 +10,12 @@
         (ls, num) match
           case (d :: tl, _) if d.isDigit => aux(tl, tokens, d :: num)
           case (d :: tl, hd :: _) => aux(d :: tl, Num(num.reverse.mkString.toInt) :: tokens, List())
-          case ('(' :: tl, _)     => aux(tl, Lparen :: tokens, num)
-          case (')' :: tl, _)     => aux(tl, Rparen :: tokens, num)
+          case ('(' :: tl, _) => aux(tl, Lparen :: tokens, num)
+          case (')' :: tl, _) => aux(tl, Rparen :: tokens, num)
           case ('m' :: 'u' :: 'l' :: tl, _) => aux(tl, Mul :: tokens, num)
-          case (',' :: tl, _)               => aux(tl, Sep :: tokens, num)
-          case (_ :: tl, _)                 => aux(tl, Empty :: tokens, num)
-          case (_, _)                       => tokens.reverse
+          case (',' :: tl, _) => aux(tl, Sep :: tokens, num)
+          case (_ :: tl, _) => aux(tl, Empty :: tokens, num)
+          case (_, _) => tokens.reverse
       aux(source, List(), List())
 
   extension (tokens: List[Token])
@@ -23,8 +23,8 @@
       import Token.*
       def aux(tokens: List[Token], acc: Int): Int = tokens match
         case Mul :: Lparen :: Num(a) :: Sep :: Num(b) :: Rparen :: tl => aux(tl, acc + a * b)
-        case _ :: tl                                                  => aux(tl, acc)
-        case _                                                        => acc
+        case _ :: tl => aux(tl, acc)
+        case _ => acc
       aux(tokens, 0)
 
   println(

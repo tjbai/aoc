@@ -14,11 +14,11 @@
       seen: Set[(Int, Int, Int)] = Set()
   ): Boolean =
     val (r, c) = pos
-    if (seen.contains((r, c, d))) then true
+    if seen.contains((r, c, d)) then true
     else
       val (nr, nc) = (r + dirs(d)(0), c + dirs(d)(1))
       (nr, nc) match
-        case _ if (nr < 0 || nc < 0 || nr >= rows || nc >= cols) => false
+        case _ if nr < 0 || nc < 0 || nr >= rows || nc >= cols => false
         case _ if map(nr)(nc) == '#' || (nr, nc) == obs =>
           test(pos, obs, (d + 1) % 4, seen + ((r, c, d)))
         case _ => test((nr, nc), obs, d, seen + ((r, c, d)))

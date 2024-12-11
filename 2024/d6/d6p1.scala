@@ -19,7 +19,7 @@
     seen = seen + ((r, c))
     val (nr, nc) = (r + dirs(d)(0), c + dirs(d)(1))
     (nr, nc) match
-      case _ if (nr < 0 || nc < 0 || nr >= rows || nc >= cols) => ()
+      case _ if nr < 0 || nc < 0 || nr >= rows || nc >= cols => ()
       case _ if map(nr)(nc) == '#' => step(r, c, (d + 1) % 4)
       case _ => step(nr, nc, d)
 

@@ -12,7 +12,7 @@
       lines(r + 1)(c + 1)
     ).mkString match {
       case "MSMS" | "MMSS" | "SSMM" | "SMSM" => 1
-      case _                                 => 0
+      case _ => 0
     }
 
   println((for

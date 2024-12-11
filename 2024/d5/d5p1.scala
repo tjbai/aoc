@@ -24,7 +24,7 @@
           .filter(update.contains(_))
           .exists(child =>
             val exists = findChild(child, dest)
-            cache = (cache + ((cur, dest) -> exists))
+            cache = cache + ((cur, dest) -> exists)
             exists
           )
 

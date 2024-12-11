@@ -9,11 +9,11 @@
         case (hd :: tl, (pp, p)) if !cond(p, hd) =>
           aux(tl, (pp, p), false) || aux(ls, (pp, pp), false)
         case (hd :: tl, (pp, p)) if cond(p, hd) => aux(tl, (p, hd), life)
-        case _                                  => true
+        case _ => true
 
     ls match
       case a :: b :: c => aux(b :: c, (a, a), true) || aux(c, (b, b), false)
-      case _           => true // short lists will always be satisfiable
+      case _ => true // short lists will always be satisfiable
 
   println(
     scala.io.Source
