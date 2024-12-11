@@ -1,7 +1,3 @@
 .scala_build
-.scalafmt.conf
-.metals
-**/.bsp
-**/.scala-build
 .vscode
 cookies.txt
