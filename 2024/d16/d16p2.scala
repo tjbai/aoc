@@ -4,7 +4,9 @@ import scala.collection.mutable
   enum Dir:
     case L, R, U, D
 
-  val dirs = Dir.L :: Dir.R :: Dir.U :: Dir.D :: Nil
+  implicit val ordering: Ordering[(Int, Int, Int, Dir, List[(Int, Int)])] = Ordering.by {
+    case (p, _, _, _, _) => -p
+  }
 
   val lines = scala.io.Source
     .fromFile(if args.length > 0 then "d.in" else "sample.in")
@@ -12,23 +14,11 @@ import scala.collection.mutable
     .toArray
 
   val (rows, cols) = (lines.length, lines(0).length)
-  val (dirL, dirR, dirU, dirD) = (0, 1, 2, 3)
+  val sr = lines.indexWhere(_.contains('S'))
+  val sc = lines(sr).indexOf('S')
+  val er = lines.indexWhere(_.contains('E'))
+  val ec = lines(er).indexOf('E')
 
-  val (sr, sc) = (for
-    r <- 0 until rows
-    c <- 0 until cols
-    if lines(r)(c) == 'S'
-  yield (r, c))(0)
-
-  val (er, ec) = (for
-    r <- 0 until rows
-    c <- 0 until cols
-    if lines(r)(c) == 'E'
-  yield (r, c))(0)
-
-  implicit val ordering: Ordering[(Int, Int, Int, Dir, List[(Int, Int)])] = Ordering.by {
-    case (p, r, c, d, ls) => -p
-  }
   var pq = mutable.PriorityQueue((0, sr, sc, Dir.R, List((sr, sc))))
   var best = mutable.Map[(Int, Int, Dir), Int]().withDefaultValue(1e9.toInt)
   var paths = mutable.Map[Dir, Set[(Int, Int)]]().withDefaultValue(Set.empty)
@@ -42,13 +32,12 @@ import scala.collection.mutable
       for (dr, dc, nd) <- Seq((0, -1, Dir.L), (0, 1, Dir.R), (-1, 0, Dir.U), (1, 0, Dir.D))
       do pq += ((p + 1 + (if nd != d then 1000 else 0), r + dr, c + dc, nd, (r, c) :: ls))
 
-  val bestEnd = dirs.map(d => best((er, ec, d))).min
+  val bestEnd = Dir.values.map(d => best((er, ec, d))).min
 
   println(
-    dirs
+    Dir.values
       .filter(d => best((er, ec, d)) == bestEnd)
-      .map(d => paths(d))
-      .flatten
-      .toSet
+      .flatMap(paths)
+      .distinct
       .size + 1
   )
